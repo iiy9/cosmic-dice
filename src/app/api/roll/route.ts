@@ -28,6 +28,7 @@ export async function GET() {
         audience: "https://op.spacecomputer.io/api",
         grant_type: "client_credentials",
       }),
+      cache: 'no-store',
     });
 
     console.log("Token Response Status:", tokenRes.status);
@@ -43,6 +44,7 @@ export async function GET() {
     // Fetch random data from the TRNG service
     const trngRes = await fetch(`https://op.spacecomputer.io/api/v1/services/trng`, {
       headers: { Authorization: `Bearer ${token}` },
+      cache: 'no-store',
     });
 
     console.log("TRNG Response Status:", trngRes.status);
@@ -60,9 +62,18 @@ export async function GET() {
     const roll = (parseInt(hex.slice(0, 8), 16) % 6) + 1;
     console.log("Generated hex:", hex, "Roll:", roll);
 
-    return NextResponse.json({ roll, source });
+    return NextResponse.json({ roll, source }, {
+      headers: {
+        'Cache-Control': 'no-store, max-age=0',
+      },
+    });
   } catch (err) {
     console.error("Error in GET /api/roll:", err);
-    return NextResponse.json({ error: "Failed to roll." }, { status: 500 });
+    return NextResponse.json({ error: "Failed to roll." }, { 
+      status: 500,
+      headers: {
+        'Cache-Control': 'no-store, max-age=0',
+      },
+    });
   }
 }
