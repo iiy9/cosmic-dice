@@ -50,7 +50,7 @@ export default function Home() {
 
   return (
     <>
-      <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-900 via-black to-purple-900 text-white relative overflow-hidden">
+      <main className="flex flex-col min-h-screen bg-gradient-to-br from-indigo-900 via-black to-purple-900 text-white relative overflow-hidden">
         {/* Background stars */}
         {stars.map((star) => (
           <motion.div
@@ -74,92 +74,96 @@ export default function Home() {
           />
         ))}
 
-        <motion.div
-          initial={{ scale: 0.95, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.4 }}
-          className="z-10 px-4 w-full max-w-md"
-        >
-          <Card className="p-6 w-full text-center space-y-5 bg-black/70 border border-indigo-500/20 backdrop-blur-sm rounded-xl">
-            <motion.h1 
-              className="text-3xl font-bold text-gradient bg-gradient-to-r from-blue-400 to-indigo-500"
-            >
-              🎲 Cosmic Dice
-            </motion.h1>
-            
-            <p className="text-sm text-zinc-400">
-              A fun project using SpaceComputer&apos;s Orbitport for true cosmic randomness.
-              Roll dice with entropy harvested from satellites in orbit!
-            </p>
-            
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              <Button 
-                className='cursor-pointer bg-indigo-600 hover:bg-indigo-700 px-6 py-2 rounded-lg font-medium transition-all' 
-                onClick={handleRoll} 
-                disabled={loading}
+        {/* Content Wrapper */}
+        <div className="flex-grow flex items-center justify-center p-4">
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.4 }}
+            className="z-10 w-full max-w-md"
+          >
+            <Card className="p-6 w-full text-center space-y-5 bg-black/70 border border-indigo-500/20 backdrop-blur-sm rounded-xl">
+              <motion.h1 
+                className="text-2xl sm:text-3xl font-bold text-gradient bg-gradient-to-r from-blue-400 to-indigo-500"
               >
-                {loading ? (
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                  >
-                    🌀
-                  </motion.div>
-                ) : 'ROLL DICE'}
-              </Button>
-            </motion.div>
-
-            <AnimatePresence mode="wait">
-              {roll !== null && (
-                <motion.div 
-                  key={roll}
-                  initial={{ y: 10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -10, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-3"
+                🎲 Cosmic Dice
+              </motion.h1>
+              
+              <p className="text-xs sm:text-sm text-zinc-400">
+                A fun project using SpaceComputer&apos;s Orbitport for true cosmic randomness.
+                Roll dice with entropy harvested from satellites in orbit!
+              </p>
+              
+              <motion.div
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <Button 
+                  className='cursor-pointer bg-indigo-600 hover:bg-indigo-700 px-6 py-2 rounded-lg font-medium transition-all text-sm sm:text-base' 
+                  onClick={handleRoll} 
+                  disabled={loading}
                 >
-                  <motion.p className="text-3xl">
-                    🎯 <span className="font-bold text-gradient bg-gradient-to-r from-yellow-400 to-orange-500">{roll}</span>
-                  </motion.p>
-                  <p className="text-sm text-blue-400">
-                    🔗 Source: {source}
-                  </p>
+                  {loading ? (
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="w-5 h-5 mx-auto" // Centering the spinner
+                    >
+                      🌀
+                    </motion.div>
+                  ) : 'ROLL DICE'}
+                </Button>
+              </motion.div>
+
+              <AnimatePresence mode="wait">
+                {roll !== null && (
+                  <motion.div 
+                    key={roll} // Using roll as key for re-animation on change
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -10, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-2 pt-2" // Adjusted spacing
+                  >
+                    <motion.p className="text-2xl sm:text-3xl">
+                      🎯 <span className="font-bold text-gradient bg-gradient-to-r from-yellow-400 to-orange-500">{roll}</span>
+                    </motion.p>
+                    <p className="text-xs sm:text-sm text-blue-400">
+                      🔗 Source: {source}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              
+              {rollHistory.length > 0 && (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="pt-3 border-t border-indigo-500/20"
+                >
+                  <p className="text-xs text-indigo-400 mb-2">Recent rolls:</p>
+                  <div className="flex justify-center gap-2 flex-wrap">
+                    {rollHistory.map((item, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 0.8 }}
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ delay: index * 0.05 }} // Faster animation
+                        className="w-7 h-7 rounded-full bg-indigo-700/70 flex items-center justify-center text-xs font-bold"
+                      >
+                        {item.roll}
+                      </motion.div>
+                    ))}
+                  </div>
                 </motion.div>
               )}
-            </AnimatePresence>
-            
-            {rollHistory.length > 0 && (
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="pt-3 border-t border-indigo-500/20"
-              >
-                <p className="text-xs text-indigo-400 mb-2">Recent rolls:</p>
-                <div className="flex justify-center gap-2">
-                  {rollHistory.map((item, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 0.8 }}
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="w-7 h-7 rounded-full bg-indigo-700/70 flex items-center justify-center text-xs font-bold"
-                    >
-                      {item.roll}
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </Card>
-        </motion.div>
+            </Card>
+          </motion.div>
+        </div>
 
         {/* Disclaimer footer */}
-        <div className="absolute bottom-0 w-full text-center pb-3 text-xs text-zinc-500">
+        <div className="w-full text-center pb-4 pt-2 text-xs text-zinc-500 z-10">
           <p>This is a fun project using SpaceComputer&apos;s services. Not affiliated with SpaceComputer.</p>
           <p>Created by <Link href="https://twitter.com/yixitco" target="_blank" className="hover:text-indigo-400 underline">@yixitco</Link></p>
         </div>
