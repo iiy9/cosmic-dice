@@ -62,7 +62,7 @@ export async function GET() {
     const roll = (parseInt(hex.slice(0, 8), 16) % 6) + 1;
     console.log("Generated hex:", hex, "Roll:", roll);
 
-    return NextResponse.json({ roll, source }, {
+    return NextResponse.json({ roll, source, hex }, {
       headers: {
         'Cache-Control': 'no-store, max-age=0',
       },

@@ -11,6 +11,8 @@ export default function Home() {
   const [source, setSource] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [rollHistory, setRollHistory] = useState<Array<{roll: number, source: string}>>([]);
+  const [hashData, setHashData] = useState<string | null>(null);
+  const [showHash, setShowHash] = useState(false);
 
   const handleRoll = async () => {
     setLoading(true);
@@ -18,6 +20,7 @@ export default function Home() {
     const data = await res.json();
     setRoll(data.roll);
     setSource(data.source);
+    setHashData(data.hex); 
     
     // Update roll history
     if (data.roll && data.source) {
@@ -123,7 +126,7 @@ export default function Home() {
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -10, opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="space-y-2 pt-2" // Adjusted spacing
+                    className="space-y-2 pt-2"
                   >
                     <motion.p className="text-2xl sm:text-3xl">
                       🎯 <span className="font-bold text-gradient bg-gradient-to-r from-yellow-400 to-orange-500">{roll}</span>
@@ -131,6 +134,36 @@ export default function Home() {
                     <p className="text-xs sm:text-sm text-blue-400">
                       🔗 Source: {source}
                     </p>
+                    {hashData && (
+                      <div className="text-center">
+                        <p
+                          className="text-xs font-mono text-zinc-400 mt-1"
+                          onMouseEnter={() => setShowHash(true)}
+                          onMouseLeave={() => setShowHash(false)}
+                        >
+                          <span className="text-zinc-500">Hash: </span>
+                          <AnimatePresence mode="wait">
+                            <motion.span
+                              key={showHash ? 'fullhash' : 'truncatedhash'} // Key for re-animation
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              transition={{ duration: 0.1 }}
+                              className="inline-block cursor-pointer hover:text-indigo-300 transition-colors break-all"
+                              title={hashData}
+                              onClick={() => {
+                                navigator.clipboard.writeText(hashData);
+                                alert('Hash copied to clipboard');
+                              }}
+                            >
+                              {showHash
+                                ? hashData
+                                : (hashData.length > 20 ? `${hashData.slice(0, 10)}...${hashData.slice(-10)}` : hashData)}
+                            </motion.span>
+                          </AnimatePresence>
+                        </p>
+                      </div>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
