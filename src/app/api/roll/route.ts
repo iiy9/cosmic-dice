@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+export const dynamic = 'force-dynamic';
+
 const OP_AUTH_URL = process.env.OP_AUTH_URL;
 const OP_CLIENT_ID = process.env.OP_CLIENT_ID;
 const OP_CLIENT_SECRET = process.env.OP_CLIENT_SECRET;
@@ -28,7 +30,14 @@ export async function GET() {
       }),
     });
 
+    console.log("Token Response Status:", tokenRes.status);
     const tokenData = await tokenRes.json();
+    console.log("Token Data:", JSON.stringify(tokenData));
+
+    if (!tokenRes.ok || !tokenData.access_token) {
+      console.error("Failed to get token. Status:", tokenRes.status, "Data:", tokenData);
+      return NextResponse.json({ error: "Authentication failed. Could not retrieve access token." }, { status: tokenRes.status || 500 });
+    }
     const token = tokenData.access_token;
 
     // Fetch random data from the TRNG service
@@ -36,12 +45,20 @@ export async function GET() {
       headers: { Authorization: `Bearer ${token}` },
     });
 
+    console.log("TRNG Response Status:", trngRes.status);
     const trngData = await trngRes.json();
+    console.log("TRNG Data:", JSON.stringify(trngData));
+
+    if (!trngRes.ok || !trngData.data) {
+      console.error("Failed to get TRNG data. Status:", trngRes.status, "Data:", trngData);
+      return NextResponse.json({ error: "Failed to get random data from TRNG service." }, { status: trngRes.status || 500 });
+    }
     const hex = trngData.data;
     const source = trngData.src;
 
     // Parse the hex string to get a number between 1 and 6
     const roll = (parseInt(hex.slice(0, 8), 16) % 6) + 1;
+    console.log("Generated hex:", hex, "Roll:", roll);
 
     return NextResponse.json({ roll, source });
   } catch (err) {
