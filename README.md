@@ -20,7 +20,7 @@ Check out the live demo here: [https://cosmic-dice.netlify.app](https://cosmic-d
 ## 🛠️ Technologies Used
 
 - **Frontend:** [Next.js](https://nextjs.org/), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/) / [ShadcnUI] (https://ui.shadcn.com)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/) / [ShadcnUI](https://ui.shadcn.com)
 - **Font:** [Geist](https://vercel.com/font) (As it comes with Next.js)
 - **Randomness Source:** SpaceComputer's Orbitport
 
