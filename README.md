@@ -1,6 +1,6 @@
 # Cosmic Dice
 
-🎲 Cosmic Dice is a fun and interactive web application that allows users to roll dice with true cosmic randomness, thanks to SpaceComputer's Orbitport which harvests entropy from satellites in orbit!
+🎲 Cosmic Dice is a fun and interactive web application that allows users to roll dice with true cosmic randomness, thanks to [@spacecomputerio](https://github.com/spacecomputerio)'s Orbitport which harvests entropy from satellites in orbit!
 
 ## ✨ Live Demo
 
